@@ -12,11 +12,24 @@ targetCompatibility = '1.8'
 compileJava.options.encoding = 'UTF-8'
 
 repositories {
+    mavenCentral()
     flatDir {
         dirs 'libs'
     }
 }
 
+configurations {
+    extraLibs
+}
+
 dependencies {
-    compile name: "bukkit-1.7.10"
+    compile name: 'bukkit-1.7.10'
+    compile 'mysql:mysql-connector-java:8.0.19'
+    extraLibs 'org.jboss.aerogear:aerogear-otp-java:1.0.0'
+
+    compile configurations.extraLibs
+}
+
+jar {
+    from(configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }) { exclude 'META-INF/**' }
 }
