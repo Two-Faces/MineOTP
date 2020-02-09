@@ -1,11 +1,9 @@
 package ru.bifacial.otp.listener.listeners;
 
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.EventHandler;
@@ -26,6 +24,23 @@ public class InteractListener implements Listener
     public void onPlayerPlace(final BlockPlaceEvent e) {
         this.handleEvent(e.getPlayer(), e, "place");
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerPickup(final PlayerPickupItemEvent e) {
+        this.handleEvent(e.getPlayer(), e, "pickup");
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerDrop(final PlayerDropItemEvent e) {
+        this.handleEvent(e.getPlayer(), e, "drop");
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerDamage(final EntityDamageEvent e) {
+        if(e.getEntity() instanceof Player) {
+            this.handleEvent((Player) e.getEntity(), e, "damage");
+        }
+    }
     
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerBreak(final BlockBreakEvent e) {
@@ -43,12 +58,12 @@ public class InteractListener implements Listener
     }
     
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerClick(final InventoryClickEvent e) {
-        if (e.getWhoClicked() instanceof Player) {
-            this.handleEvent((Player)e.getWhoClicked(), e, "click");
+    public void onPlayerEntityDamage(final EntityDamageByEntityEvent e) {
+        if(e.getDamager() instanceof Player) {
+            this.handleEvent((Player) e.getDamager(), e,"damage");
         }
     }
-    
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerCMD(final PlayerCommandPreprocessEvent e) {
         if (!e.getMessage().toLowerCase().startsWith("/otpauth")) {
@@ -63,7 +78,9 @@ public class InteractListener implements Listener
 
     private void handleEvent(final Player p, final Cancellable e, String event) {
         if (p != null && e != null && this.plugin.needToOTP(p) && this.plugin.isLoggedUser(p)) {
-            p.sendMessage(MineOTP.__("\u0412\u044b \u043d\u0435 \u043c\u043e\u0436\u0435\u0442\u0435 \u0432\u044b\u043f\u043e\u043b\u043d\u0438\u0442\u044c \u044d\u0442\u043e! \u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 /otpauth [key]"));
+            if(!event.equals("pickup") && !event.equals("damage")) {
+                p.sendMessage(MineOTP.__("\u0412\u044b \u043d\u0435 \u043c\u043e\u0436\u0435\u0442\u0435 \u0432\u044b\u043f\u043e\u043b\u043d\u0438\u0442\u044c \u044d\u0442\u043e! \u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0439\u0442\u0435 /otpauth [key]"));
+            }
 
             if ("move".equals(event)) {
                 p.teleport(LoginListener.coords);
