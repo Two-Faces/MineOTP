@@ -2,7 +2,6 @@ main: ru.bifacial.otp.MineOTP
 name: MineOTP
 prefix: MineOTP
 version: 1.0.0
-depend: [SQLibrary]
 author: Bifacial
 commands:
   otpauth:
