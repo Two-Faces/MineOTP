@@ -83,7 +83,7 @@ public class InteractListener implements Listener
             }
 
             if ("move".equals(event)) {
-                p.teleport(LoginListener.coords);
+                p.teleport(LoginListener.coords.get(p.getUniqueId()));
             } else {
                 e.setCancelled(true);
             }

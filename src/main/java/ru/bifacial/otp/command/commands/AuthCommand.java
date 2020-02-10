@@ -23,7 +23,8 @@ public class AuthCommand implements CommandBase
                 if (this.plugin.hasOTP(p)) {
                     if (this.plugin.isLoggedUser(p)) {
                         if (this.plugin.authPlayer(p, args[0])) {
-                            LoginListener.coords = null;
+                            LoginListener.coords.remove(p.getUniqueId());
+
                             p.sendMessage(MineOTP.__("\u0412\u044b \u0443\u0441\u043f\u0435\u0448\u043d\u043e \u0432\u043e\u0448\u043b\u0438!"));
                         }
                         else {
